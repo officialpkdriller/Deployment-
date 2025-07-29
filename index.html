@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>PK-XMD WhatsApp Bot Deployment</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:700,400&display=swap">
+  <script src="https://kit.fontawesome.com/2d3b7dfbfa.js" crossorigin="anonymous"></script>
+  <style>
+    :root {
+      --primary: #5f27cd;
+      --secondary: #00b894;
+      --accent: #fd6e6a;
+      --dark: #22223b;
+      --light: #f8f9fa;
+      --card: #fff;
+      --shadow: 0 8px 32px rgba(60, 60, 120, 0.13);
+    }
+    body {
+      background: linear-gradient(120deg, #c471f5 0%, #fa71cd 100%);
+      font-family: 'Montserrat', Arial, sans-serif;
+      color: var(--dark);
+      margin: 0;
+      min-height: 200vh;
+    }
+    header {
+      text-align: center;
+      padding: 3rem 1rem 2rem 1rem;
+      color: #fff;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      letter-spacing: 1px;
+      box-shadow: 0 4px 32px #0002;
+    }
+    header h1 {
+      margin: 0 0 0.5rem 0;
+      font-size: 2.8rem;
+      font-weight: 900;
+    }
+    header p {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 400;
+    }
+    .status-section {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin: 2.5rem 0 1.5rem 0;
+    }
+    .status-card {
+      background: var(--card);
+      border-radius: 1.5rem;
+      padding: 1.2rem 2.5rem;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-size: 1.2rem;
+      min-width: 220px;
+      font-weight: 500;
+    }
+    .status-card i {
+      font-size: 1.5rem;
+      color: var(--primary);
+    }
+    .main-content {
+      max-width: 850px;
+      margin: 0 auto;
+      background: var(--card);
+      border-radius: 2.5rem;
+      box-shadow: 0 8px 32px rgba(60, 60, 120, 0.13), 0 1.5px 24px #0001;
+      padding: 2.5rem 2rem 2rem 2rem;
+      margin-bottom: 4rem;
+    }
+    .button-section {
+      margin-bottom: 2.5rem;
+      text-align: center;
+    }
+    .button-section h2 {
+      color: var(--primary);
+      font-size: 2rem;
+      margin-bottom: 1.3rem;
+    }
+    .btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+    .action-btn {
+      display: inline-block;
+      padding: 1.1rem 2.2rem;
+      border-radius: 2.5rem;
+      font-size: 1.13rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background 0.22s, transform 0.18s, box-shadow 0.2s;
+      box-shadow: var(--shadow);
+      border: none;
+      cursor: pointer;
+      letter-spacing: 0.3px;
+      margin-bottom: 0.6rem;
+      outline: none;
+    }
+    .session { background: linear-gradient(90deg, #fd6e6a, #f6d365); color: #fff;}
+    .fork { background: linear-gradient(90deg, #5f27cd 10%, #341f97 90%); color: #fff;}
+    .star { background: linear-gradient(90deg, #00b894 0%, #00cec9 100%); color: #fff;}
+    .heroku { background: linear-gradient(90deg, #6c47ff, #a56eff); color: #fff;}
+    .railway { background: linear-gradient(90deg, #232526, #414345); color: #fff;}
+    .render { background: linear-gradient(90deg, #00c6ff, #0072ff); color: #fff;}
+    .zip { background: linear-gradient(90deg, #fd6e6a, #f48c06); color: #fff;}
+    .action-btn:hover {
+      transform: translateY(-4px) scale(1.05);
+      box-shadow: 0 16px 32px rgba(60, 60, 120, 0.18);
+      opacity: 0.93;
+    }
+    .steps-section {
+      margin: 3rem 0 2.2rem 0;
+    }
+    .steps-section h2 {
+      color: var(--accent);
+      font-size: 1.6rem;
+      margin-bottom: 0.5rem;
+      text-align: center;
+    }
+    .steps-section ol {
+      padding-left: 2.1rem;
+      font-size: 1.14rem;
+      margin: 1.2rem 0 0 0;
+    }
+    .steps-section li {
+      margin-bottom: 1.2rem;
+      line-height: 1.7;
+    }
+    .highlight {
+      background: var(--secondary);
+      color: #fff;
+      font-weight: bold;
+      padding: 0.13em 0.55em;
+      border-radius: 1rem;
+      margin: 0 0.15em;
+      font-size: 1.01em;
+    }
+    .steps-section code {
+      background: #eee;
+      padding: 0.14em 0.4em;
+      border-radius: 0.7em;
+      font-size: 0.97em;
+    }
+    .about-section {
+      margin-top: 3.5rem;
+      text-align: center;
+    }
+    .about-section h2 {
+      color: var(--primary);
+      font-size: 1.4rem;
+      margin-bottom: 0.6rem;
+    }
+    .about-section .github-link {
+      display: inline-block;
+      margin-top: 0.7rem;
+      font-weight: bold;
+      color: var(--secondary);
+      font-size: 1.08rem;
+      text-decoration: none;
+    }
+    .about-section .github-link:hover {
+      color: var(--accent);
+      text-decoration: underline;
+    }
+    footer {
+      text-align: center;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      color: #fff;
+      padding: 1.2rem 0;
+      border-radius: 1rem 1rem 0 0;
+      margin: 0;
+      font-size: 1.04rem;
+      letter-spacing: 0.4px;
+    }
+    footer a {
+      color: var(--accent);
+      text-decoration: underline;
+    }
+    @media (max-width: 700px) {
+      .main-content {
+        padding: 1.2rem 0.6rem;
+      }
+      .status-section {
+        gap: 0.7rem;
+      }
+      .status-card {
+        min-width: 150px;
+        font-size: 1rem;
+        padding: 0.7rem 1rem;
+      }
+      .btn-group {
+        flex-direction: column;
+        gap: 0.6rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🚀 PK-XMD WhatsApp Bot Deployment Portal</h1>
+    <p>Deploy, configure, and get started with the PK-XMD WhatsApp bot in just a few steps!</p>
+  </header>
+  <section class="status-section">
+    <div class="status-card">
+      <i class="fas fa-battery-half"></i>
+      <span id="battery">Battery: <span id="battery-val">Loading...</span></span>
+    </div>
+    <div class="status-card">
+      <i class="fas fa-clock"></i>
+      <span id="time">Time: <span id="time-val">--:--:--</span></span>
+    </div>
+    <div class="status-card">
+      <i class="fas fa-globe"></i>
+      <span id="ip">IP Address: <span id="ip-val">Loading...</span></span>
+    </div>
+  </section>
+  <div class="main-content">
+    <section class="button-section">
+      <h2>Quick Actions</h2>
+      <div class="btn-group">
+        <a href="https://pkxmd-pairing-site-pz9c.onrender.com" class="action-btn session" target="_blank"><i class="fas fa-link"></i> Get Session Website</a>
+        <a href="https://github.com/Pkphotographer1911/PK-XMD/fork" class="action-btn fork" target="_blank"><i class="fas fa-code-branch"></i> Fork Repo</a>
+        <a href="https://github.com/Pkphotographer1911/PK-XMD" class="action-btn star" target="_blank"><i class="fas fa-star"></i> Star Repo</a>
+        <a href="https://heroku.com/deploy?template=https://github.com/Pkphotographer1911/PK-XMD" class="action-btn heroku" target="_blank"><i class="fab fa-heroku"></i> Deploy on Heroku</a>
+        <a href="https://railway.app/template/hghw9y?referralCode=pk-xmd" class="action-btn railway" target="_blank"><i class="fas fa-train"></i> Deploy on Railway</a>
+        <a href="https://render.com/deploy?repo=https://github.com/Pkphotographer1911/PK-XMD" class="action-btn render" target="_blank"><i class="fas fa-rocket"></i> Deploy on Render</a>
+        <a href="https://github.com/Pkphotographer1911/PK-XMD/archive/refs/heads/main.zip" class="action-btn zip" target="_blank"><i class="fas fa-download"></i> Download ZIP</a>
+      </div>
+    </section>
+    <section class="steps-section">
+      <h2>🚦 Deployment Steps</h2>
+      <ol>
+        <li>
+          <b>Get WhatsApp Session:</b> 
+          <ul>
+            <li>Click <span class="highlight">"Get Session Website"</span> to generate your QR session.</li>
+            <li>Scan the QR code using WhatsApp on your phone.</li>
+          </ul>
+        </li>
+        <li>
+          <b>Fork the Repository:</b>
+          <ul>
+            <li>Click <span class="highlight">"Fork Repo"</span> to create your own copy of the bot.</li>
+          </ul>
+        </li>
+        <li>
+          <b>Deploy the Bot:</b>
+          <ul>
+            <li>Choose where to deploy: <span class="highlight">Heroku</span>, <span class="highlight">Railway</span>, or <span class="highlight">Render</span>.</li>
+            <li>Click the respective button and follow the platform's instructions.</li>
+          </ul>
+        </li>
+        <li>
+          <b>Configure Environment Variables:</b>
+          <ul>
+            <li>Set the <code>SESSION_ID</code> with the value from the session website.</li>
+          </ul>
+        </li>
+        <li>
+          <b>Star the Repository!</b>
+          <ul>
+            <li>Support PK-XMD by starring on GitHub.</li>
+          </ul>
+        </li>
+        <li>
+          <b>Manual Setup:</b>
+          <ul>
+            <li>To run locally, download the ZIP file, extract, and follow instructions in <code>README.md</code>.</li>
+          </ul>
+        </li>
+      </ol>
+    </section>
+    <section class="about-section">
+      <h2>✨ About PK-XMD</h2>
+      <p>
+        PK-XMD is a powerful multi-purpose WhatsApp bot with advanced features and seamless deployment options.<br>
+        <a href="https://github.com/Pkphotographer1911/PK-XMD" target="_blank" class="github-link">
+          <i class="fab fa-github"></i> View on GitHub
+        </a>
+      </p>
+    </section>
+  </div>
+  <footer>
+    Made with ❤️ by <a href="https://github.com/Pkphotographer1911" target="_blank">Pkdriller</a> | &copy; 2025
+  </footer>
+  <script>
+    // Battery
+    if ('getBattery' in navigator) {
+      navigator.getBattery().then(battery => {
+        function updateBattery() {
+          let percent = Math.round(battery.level * 100);
+          let icon = '';
+          if (percent > 80) icon = '🔋';
+          else if (percent > 50) icon = '🔋';
+          else if (percent > 20) icon = '🔋';
+          else icon = '🪫';
+          document.getElementById('battery-val').textContent = percent + '% ' + icon;
+        }
+        updateBattery();
+        battery.addEventListener('levelchange', updateBattery);
+      });
+    } else {
+      document.getElementById('battery-val').textContent = "Not supported";
+    }
+    // Time
+    function updateTime() {
+      const now = new Date();
+      document.getElementById('time-val').textContent =
+        now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+    }
+    setInterval(updateTime, 1000);
+    updateTime();
+    // IP Address
+    fetch("https://api.ipify.org?format=json")
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('ip-val').textContent = data.ip;
+      })
+      .catch(() => {
+        document.getElementById('ip-val').textContent = "Unavailable";
+      });
+  </script>
+</body>
+</html>
