@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PK-XMD WhatsApp Bot Deployment</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700;900&family=Roboto:wght@400;700&display=swap');
+        
+        :root {
+            --primary: #6e48aa;
+            --secondary: #9d50bb;
+            --accent: #4776E6;
+            --text: #ffffff;
+            --background: #0f0c29;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: var(--background);
+            color: var(--text);
+            overflow-x: hidden;
+            background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #3a1c71);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+        
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            position: relative;
+        }
+        
+        .bot-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 20px;
+            border: 5px solid #9d50bb;
+            box-shadow: 0 0 20px rgba(157, 80, 187, 0.7);
+            animation: rotateClockwise 10s linear infinite;
+        }
+        
+        @keyframes rotateClockwise {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .info-bar {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 10px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: bold;
+        }
+        
+        h1 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 900;
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #ff8a00, #e52e71, #4776E6, #6e48aa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: shine 3s linear infinite;
+            background-size: 200% auto;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        @keyframes shine {
+            to { background-position: 200% center; }
+        }
+        
+        h2 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 2rem;
+            margin: 30px 0 15px;
+            color: #ff8a00;
+            text-shadow: 0 0 10px rgba(255, 138, 0, 0.5);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { text-shadow: 0 0 10px rgba(255, 138, 0, 0.5); }
+            50% { text-shadow: 0 0 20px rgba(255, 138, 0, 0.8); }
+            100% { text-shadow: 0 0 10px rgba(255, 138, 0, 0.5); }
+        }
+        
+        p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+        
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #6e48aa, #9d50bb);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(45deg, #4776E6, #8E54E9);
+        }
+        
+        .btn-accent {
+            background: linear-gradient(45deg, #ff8a00, #e52e71);
+        }
+        
+        .btn-success {
+            background: linear-gradient(45deg, #00b09b, #96c93d);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(45deg, #f46b45, #eea849);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+        }
+        
+        .btn-info {
+            background: linear-gradient(45deg, #4b6cb7, #182848);
+        }
+        
+        .btn-dark {
+            background: linear-gradient(45deg, #232526, #414345);
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+        
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: #9d50bb;
+        }
+        
+        .feature-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #ff8a00;
+        }
+        
+        .animated-text {
+            display: inline-block;
+        }
+        
+        .animated-text span {
+            display: inline-block;
+            animation: wave 2s infinite;
+            animation-delay: calc(0.1s * var(--i));
+        }
+        
+        @keyframes wave {
+            0%, 40%, 100% { transform: translateY(0); }
+            20% { transform: translateY(-15px); }
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 50px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .social-link {
+            color: white;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .social-link:hover {
+            transform: scale(1.2);
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+            
+            .buttons-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .info-bar {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+            
+            .bot-image {
+                width: 120px;
+                height: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles-js"></div>
+    
+    <div class="container">
+        <header>
+            <div class="info-bar">
+                <div class="info-item">
+                    <i class="fas fa-clock"></i>
+                    <span id="time"></span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-calendar-day"></i>
+                    <span id="date"></span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-calendar-week"></i>
+                    <span id="day"></span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-network-wired"></i>
+                    <span id="ip"></span>
+                </div>
+            </div>
+            
+            <img src="https://files.catbox.moe/vo1pfy.jpg" alt="PK-XMD Bot" class="bot-image">
+            
+            <h1>
+                <span class="animated-text">
+                    <span style="--i:1">P</span>
+                    <span style="--i:2">K</span>
+                    <span style="--i:3">-</span>
+                    <span style="--i:4">X</span>
+                    <span style="--i:5">M</span>
+                    <span style="--i:6">D</span>
+                </span>
+            </h1>
+            
+            <p style="font-size: 1.3rem; font-weight: bold;">
+                <span style="color: #ff8a00;">Advanced</span> 
+                <span style="color: #e52e71;">WhatsApp</span> 
+                <span style="color: #4776E6;">Bot</span> 
+                <span style="color: #6e48aa;">Deployment</span> 
+                <span style="color: #00b09b;">Platform</span>
+            </p>
+        </header>
+        
+        <section>
+            <h2>🚀 DEPLOYMENT OPTIONS</h2>
+            <p>Choose your preferred deployment method below. Each option provides a seamless way to get your PK-XMD WhatsApp bot up and running.</p>
+            
+            <div class="buttons-grid">
+                <a href="https://pkxmd-pairing-site-pz9c.onrender.com" class="btn btn-primary" id="pairing-btn">
+                    <i class="fas fa-link"></i> PAIRING SESSION WEBSITE
+                </a>
+                
+                <a href="https://github.com/officialpkdriller/PK-XMD" class="btn btn-accent" target="_blank">
+                    <i class="fas fa-star"></i> MUST STAR THIS REPO
+                </a>
+                
+                <a href="https://github.com/officialpkdriller/PK-XMD/fork" class="btn btn-warning" target="_blank">
+                    <i class="fas fa-code-branch"></i> MUST FORK THIS REPO
+                </a>
+                
+                <a href="https://heroku.com/deploy?template=https://github.com/officialpkdriller/PK-XMD" class="btn btn-secondary" target="_blank">
+                    <i class="fab fa-heroku"></i> Deploy on HEROKU
+                </a>
+                
+                <a href="https://railway.app/new/template?template=https://github.com/officialpkdriller/PK-XMD" class="btn btn-info" target="_blank">
+                    <i class="fas fa-train"></i> Deploy on RAILWAY
+                </a>
+                
+                <a href="https://render.com/deploy?repo=https://github.com/officialpkdriller/PK-XMD" class="btn btn-success" target="_blank">
+                    <i class="fas fa-server"></i> Deploy on RENDER
+                </a>
+                
+                <a href="https://replit.com/github/officialpkdriller/PK-XMD" class="btn btn-dark" target="_blank">
+                    <i class="fas fa-code"></i> Deploy on REPLIT
+                </a>
+                
+                <a href="https://github.com/officialpkdriller/PK-XMD/archive/refs/heads/main.zip" class="btn btn-danger">
+                    <i class="fas fa-file-archive"></i> Download zip file
+                </a>
+            </div>
+        </section>
+        
+        <section>
+            <h2>📌 DEPLOYMENT INSTRUCTIONS</h2>
+            
+            <div class="features">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fab fa-heroku"></i>
+                    </div>
+                    <h3 class="feature-title">Heroku Deployment</h3>
+                    <p>1. Click the Heroku button above</p>
+                    <p>2. Log in to your Heroku account</p>
+                    <p>3. Fill in required environment variables</p>
+                    <p>4. Click "Deploy" and wait for completion</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-train"></i>
+                    </div>
+                    <h3 class="feature-title">Railway Deployment</h3>
+                    <p>1. Click the Railway button above</p>
+                    <p>2. Authorize with GitHub if prompted</p>
+                    <p>3. Configure environment variables</p>
+                    <p>4. Deploy and monitor the process</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <h3 class="feature-title">Render Deployment</h3>
+                    <p>1. Click the Render button above</p>
+                    <p>2. Create a free account if needed</p>
+                    <p>3. Set up environment variables</p>
+                    <p>4. Start the deployment process</p>
+                </div>
+            </div>
+        </section>
+        
+        <section>
+            <h2>🔗 ADDITIONAL LINKS</h2>
+            <div class="buttons-grid">
+                <a href="https://whatsapp.com/channel/0029Vad7YNyJuyA77CtIPX0x" class="btn btn-success" target="_blank">
+                    <i class="fab fa-whatsapp"></i> FOLLOW ON WHATSAPP
+                </a>
+                
+                <a href="https://github.com/officialpkdriller/PK-XMD" class="btn btn-dark" target="_blank">
+                    <i class="fab fa-github"></i> GITHUB REPOSITORY
+                </a>
+                
+                <a href="https://github.com/officialpkdriller" class="btn btn-info" target="_blank">
+                    <i class="fas fa-user"></i> DEVELOPER PROFILE
+                </a>
+            </div>
+        </section>
+        
+        <section>
+            <h2>🌟 FEATURES</h2>
+            <div class="features">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3 class="feature-title">Lightning Fast</h3>
+                    <p>Optimized for speed and performance with minimal latency for all your WhatsApp needs.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Secure</h3>
+                    <p>Built with security in mind to protect your data and privacy at all times.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <h3 class="feature-title">Customizable</h3>
+                    <p>Easily customize the bot to fit your specific requirements and preferences.</p>
+                </div>
+            </div>
+        </section>
+        
+        <footer>
+            <p>© 2025 PK-XMD WhatsApp Bot. All rights reserved.</p>
+            <p>Created with ❤️ by officialpkdriller</p>
+            
+            <div class="social-links">
+                <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-whatsapp"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-telegram"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+            </div>
+        </footer>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        // Display current time, date, day
+        function updateDateTime() {
+            const now = new Date();
+            
+            // Time
+            const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
+            document.getElementById('time').textContent = now.toLocaleTimeString(undefined, timeOptions);
+            
+            // Date
+            const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('date').textContent = now.toLocaleDateString(undefined, dateOptions);
+            
+            // Day
+            const dayOptions = { weekday: 'long' };
+            document.getElementById('day').textContent = now.toLocaleDateString(undefined, dayOptions);
+        }
+        
+        // Update every second
+        setInterval(updateDateTime, 1000);
+        updateDateTime(); // Initial call
+        
+        // Get IP address
+        fetch('https://api.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('ip').textContent = data.ip;
+            })
+            .catch(() => {
+                document.getElementById('ip').textContent = 'Unknown';
+            });
+        
+        // Initialize particles.js
+        particlesJS('particles-js', {
+            "particles": {
+                "number": {
+                    "value": 80,
+                    "density": {
+                        "enable": true,
+                        "value_area": 800
+                    }
+                },
+                "color": {
+                    "value": "#ffffff"
+                },
+                "shape": {
+                    "type": "circle",
+                    "stroke": {
+                        "width": 0,
+                        "color": "#000000"
+                    },
+                    "polygon": {
+                        "nb_sides": 5
+                    }
+                },
+                "opacity": {
+                    "value": 0.5,
+                    "random": false,
+                    "anim": {
+                        "enable": false,
+                        "speed": 1,
+                        "opacity_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "size": {
+                    "value": 3,
+                    "random": true,
+                    "anim": {
+                        "enable": false,
+                        "speed": 40,
+                        "size_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 150,
+                    "color": "#ffffff",
+                    "opacity": 0.4,
+                    "width": 1
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 2,
+                    "direction": "none",
+                    "random": false,
+                    "straight": false,
+                    "out_mode": "out",
+                    "bounce": false,
+                    "attract": {
+                        "enable": false,
+                        "rotateX": 600,
+                        "rotateY": 1200
+                    }
+                }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": {
+                        "enable": true,
+                        "mode": "grab"
+                    },
+                    "onclick": {
+                        "enable": true,
+                        "mode": "push"
+                    },
+                    "resize": true
+                },
+                "modes": {
+                    "grab": {
+                        "distance": 140,
+                        "line_linked": {
+                            "opacity": 1
+                        }
+                    },
+                    "bubble": {
+                        "distance": 400,
+                        "size": 40,
+                        "duration": 2,
+                        "opacity": 8,
+                        "speed": 3
+                    },
+                    "repulse": {
+                        "distance": 200,
+                        "duration": 0.4
+                    },
+                    "push": {
+                        "particles_nb": 4
+                    },
+                    "remove": {
+                        "particles_nb": 2
+                    }
+                }
+            },
+            "retina_detect": true
+        });
+        
+        // Animate text on scroll
+        const animateOnScroll = () => {
+            const elements = document.querySelectorAll('.feature-card, .btn');
+            
+            elements.forEach(element => {
+                const elementPosition = element.getBoundingClientRect().top;
+                const screenPosition = window.innerHeight / 1.3;
+                
+                if (elementPosition < screenPosition) {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }
+            });
+        };
+        
+        // Set initial state
+        document.querySelectorAll('.feature-card, .btn').forEach(element => {
+            element.style.opacity = '0';
+            element.style.transform = 'translateY(20px)';
+            element.style.transition = 'all 0.5s ease';
+        });
+        
+        window.addEventListener('scroll', animateOnScroll);
+        animateOnScroll(); // Initial call
+    </script>
+</body>
+</html>
