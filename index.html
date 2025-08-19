@@ -296,6 +296,82 @@
             transform: scale(1.2);
         }
         
+        /* Voice Control Styles */
+        .voice-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1000;
+        }
+        
+        .voice-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(45deg, #6e48aa, #9d50bb);
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .voice-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        .voice-btn.active {
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            animation: pulse 1.5s infinite;
+        }
+        
+        .voice-panel {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 10px;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        
+        .voice-panel.active {
+            display: flex;
+        }
+        
+        .voice-slider {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .voice-slider label {
+            font-size: 14px;
+            min-width: 80px;
+        }
+        
+        .voice-slider input {
+            flex: 1;
+        }
+        
+        .voice-select {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px;
+            border-radius: 5px;
+            width: 100%;
+        }
+        
         @media (max-width: 768px) {
             h1 {
                 font-size: 2.5rem;
@@ -319,11 +395,54 @@
                 width: 120px;
                 height: 120px;
             }
+            
+            .voice-controls {
+                bottom: 10px;
+                right: 10px;
+            }
+            
+            .voice-panel {
+                width: 250px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="particles" id="particles-js"></div>
+    
+    <!-- Voice Controls -->
+    <div class="voice-controls">
+        <div class="voice-panel" id="voicePanel">
+            <div class="voice-slider">
+                <label for="voiceRate">Speed:</label>
+                <input type="range" id="voiceRate" min="0.5" max="2" step="0.1" value="1">
+                <span id="rateValue">1</span>
+            </div>
+            <div class="voice-slider">
+                <label for="voicePitch">Pitch:</label>
+                <input type="range" id="voicePitch" min="0.5" max="2" step="0.1" value="1">
+                <span id="pitchValue">1</span>
+            </div>
+            <div class="voice-slider">
+                <label for="voiceVolume">Volume:</label>
+                <input type="range" id="voiceVolume" min="0" max="1" step="0.1" value="1">
+                <span id="volumeValue">1</span>
+            </div>
+            <select id="voiceSelect" class="voice-select"></select>
+        </div>
+        <button class="voice-btn" id="voiceSettingsBtn">
+            <i class="fas fa-cog"></i>
+        </button>
+        <button class="voice-btn" id="voicePlayBtn">
+            <i class="fas fa-play"></i>
+        </button>
+        <button class="voice-btn" id="voicePauseBtn">
+            <i class="fas fa-pause"></i>
+        </button>
+        <button class="voice-btn" id="voiceStopBtn">
+            <i class="fas fa-stop"></i>
+        </button>
+    </div>
     
     <div class="container">
         <header>
@@ -507,6 +626,165 @@
     
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
+        // Voice functionality
+        const speech = window.speechSynthesis;
+        let currentUtterance = null;
+        let voices = [];
+        
+        // DOM Elements
+        const voicePanel = document.getElementById('voicePanel');
+        const voiceSettingsBtn = document.getElementById('voiceSettingsBtn');
+        const voicePlayBtn = document.getElementById('voicePlayBtn');
+        const voicePauseBtn = document.getElementById('voicePauseBtn');
+        const voiceStopBtn = document.getElementById('voiceStopBtn');
+        const voiceSelect = document.getElementById('voiceSelect');
+        const voiceRate = document.getElementById('voiceRate');
+        const voicePitch = document.getElementById('voicePitch');
+        const voiceVolume = document.getElementById('voiceVolume');
+        const rateValue = document.getElementById('rateValue');
+        const pitchValue = document.getElementById('pitchValue');
+        const volumeValue = document.getElementById('volumeValue');
+        
+        // Get all text content from the page
+        function getAllText() {
+            const mainContent = document.querySelector('.container');
+            return mainContent.innerText;
+        }
+        
+        // Populate voice options
+        function populateVoiceList() {
+            voices = speech.getVoices();
+            
+            voiceSelect.innerHTML = '';
+            voices.forEach(voice => {
+                const option = document.createElement('option');
+                option.textContent = `${voice.name} (${voice.lang})`;
+                
+                if (voice.default) {
+                    option.textContent += ' — DEFAULT';
+                }
+                
+                option.setAttribute('data-lang', voice.lang);
+                option.setAttribute('data-name', voice.name);
+                voiceSelect.appendChild(option);
+            });
+        }
+        
+        // Initialize voices
+        if (speech.onvoiceschanged !== undefined) {
+            speech.onvoiceschanged = populateVoiceList;
+        }
+        
+        // Speak text
+        function speakText() {
+            if (speech.speaking) {
+                speech.cancel();
+            }
+            
+            const text = getAllText();
+            if (text === '') return;
+            
+            currentUtterance = new SpeechSynthesisUtterance(text);
+            
+            const selectedOption = voiceSelect.selectedOptions[0].getAttribute('data-name');
+            for (let i = 0; i < voices.length; i++) {
+                if (voices[i].name === selectedOption) {
+                    currentUtterance.voice = voices[i];
+                    break;
+                }
+            }
+            
+            currentUtterance.rate = parseFloat(voiceRate.value);
+            currentUtterance.pitch = parseFloat(voicePitch.value);
+            currentUtterance.volume = parseFloat(voiceVolume.value);
+            
+            currentUtterance.onend = function() {
+                voicePlayBtn.classList.remove('active');
+            };
+            
+            currentUtterance.onerror = function() {
+                console.error('Speech synthesis error');
+                voicePlayBtn.classList.remove('active');
+            };
+            
+            speech.speak(currentUtterance);
+            voicePlayBtn.classList.add('active');
+        }
+        
+        // Pause speech
+        function pauseSpeech() {
+            if (speech.speaking && !speech.paused) {
+                speech.pause();
+                voicePauseBtn.classList.add('active');
+            }
+        }
+        
+        // Resume speech
+        function resumeSpeech() {
+            if (speech.speaking && speech.paused) {
+                speech.resume();
+                voicePauseBtn.classList.remove('active');
+            }
+        }
+        
+        // Stop speech
+        function stopSpeech() {
+            if (speech.speaking) {
+                speech.cancel();
+                voicePlayBtn.classList.remove('active');
+                voicePauseBtn.classList.remove('active');
+            }
+        }
+        
+        // Event listeners for voice controls
+        voiceSettingsBtn.addEventListener('click', () => {
+            voicePanel.classList.toggle('active');
+        });
+        
+        voicePlayBtn.addEventListener('click', () => {
+            if (speech.speaking && speech.paused) {
+                resumeSpeech();
+            } else if (!speech.speaking) {
+                speakText();
+            }
+        });
+        
+        voicePauseBtn.addEventListener('click', () => {
+            if (speech.speaking && !speech.paused) {
+                pauseSpeech();
+            } else if (speech.speaking && speech.paused) {
+                resumeSpeech();
+            }
+        });
+        
+        voiceStopBtn.addEventListener('click', stopSpeech);
+        
+        voiceRate.addEventListener('input', () => {
+            rateValue.textContent = voiceRate.value;
+            if (currentUtterance) {
+                currentUtterance.rate = parseFloat(voiceRate.value);
+            }
+        });
+        
+        voicePitch.addEventListener('input', () => {
+            pitchValue.textContent = voicePitch.value;
+            if (currentUtterance) {
+                currentUtterance.pitch = parseFloat(voicePitch.value);
+            speech.cancel();
+                speakText();
+            }
+        });
+        
+        voiceVolume.addEventListener('input', () => {
+            volumeValue.textContent = voiceVolume.value;
+            if (currentUtterance) {
+                currentUtterance.volume = parseFloat(voiceVolume.value);
+            }
+        });
+        
+        // Initialize
+        populateVoiceList();
+        
         // Display current time, date, day
         function updateDateTime() {
             const now = new Date();
